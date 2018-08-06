@@ -1,0 +1,44 @@
+{
+  "name": "react-event-pump",
+  "version": "0.0.1",
+  "description": "Very lightweight event pump for react apps using context api and timeouts.",
+  "keywords": [
+    "react",
+    "event",
+    "pump",
+    "context"
+  ],
+  "scripts": {
+    "build": "webpack --mode production",
+    "test": "jest --testURL http://localhost --coverage"
+  },
+  "main": "./dist/ContextEventPump.js",
+  "author": "Kirk Bulis <kirk.d.bulis@gmail.com> (https://github.com/kbulis)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kbulis/react-event-pump.git"
+  },
+  "license": "ISC",
+  "peerDependencies": {
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
+    "babel-jest": "^23.4.2",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1",
+    "eslint": "^5.3.0",
+    "eslint-plugin-react": "^7.10.0",
+    "jest": "^23.4.2",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "webpack": "^4.16.4",
+    "webpack-cli": "^3.1.0"
+  }
+}
