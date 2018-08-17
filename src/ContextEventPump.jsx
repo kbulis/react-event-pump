@@ -5,25 +5,15 @@ const EventPumpContext = React.createContext(new class {
   queue = [];
   watch = [];
 
-  alertAll = (label, options) => {
-    console.log(`. alert ${label} ${JSON.stringify(options)}`);
-
-    for (const w of this.watch) {
-      if (w.match.some((l) => l === label) === true) {
-        w.receive(label, options);
-      }
-    }
-  };
-
-  watchFor = (label, receive) => {
+  watchFor = (label, receiver) => {
     console.log(`. watch ${label}`);
 
     if (!label) {
-      this.watch = this.watch.filter((w) => w.receive !== receive);
+      this.watch = this.watch.filter((w) => w.receiver !== receiver);
     }
     else {
       for (const w of this.watch) {
-        if (w.receive === receive) {
+        if (w.receiver === receiver) {
           for (const l of w.match) {
             if (l === label) {
               return;
@@ -37,7 +27,7 @@ const EventPumpContext = React.createContext(new class {
       }
 
       this.watch.push({
-        receive: receive,
+        receiver: receiver,
         match: [
           label,
         ],
@@ -45,27 +35,79 @@ const EventPumpContext = React.createContext(new class {
     }
   }
 
+  alertAll = (label, param) => {
+    console.log(`. alert ${label} ${JSON.stringify(param)}`);
+
+    for (const entry of this.watch) {
+      if (entry.match.some((l) => l === label) === true) {
+        entry.receiver(label, param, this.alertAll);
+      }
+    }
+  };
+
 });
 
 /**
  * ContextEventPump
  * 
- * ...
+ * Accepts events to watch for, passing the alert all handler with each event.
+ * If children is a single function, we assume a render is specified and pass
+ * the eventing context object handlers.
  */
 export class ContextEventPump extends React.PureComponent {
 
   render() {
-    const { children } = this.props;
+    const { watching, children } = this.props;
 
     return (
       <EventPumpContext.Consumer>
-        {(pump) => children({ alertAll: pump.alertAll, watchFor: pump.watchFor })}
+        {(eventing) => <ContextEventBase eventing={eventing} watching={watching} children={children} />}
       </EventPumpContext.Consumer>
     );
   }
 
   static propTypes = {
-    children: PropTypes.func.isRequired,
+    watching: PropTypes.array.isRequired,
+  };
+
+}
+
+/**
+ * ContextEventBase
+ * 
+ * Handles eventing lifecycle management for containing components.
+ */
+class ContextEventBase extends React.PureComponent {
+
+  componentDidMount() {
+    const { eventing, watching } = this.props;
+
+    for (const watch of watching) {
+      eventing.watchFor(watch.label, watch.receiver);
+    }
+  }
+
+  componentWillUnmount() {
+    const { eventing, watching } = this.props;
+
+    for (const watch of watching) {
+      eventing.watchFor('', watch.receiver);
+    }
+  }
+
+  render() {
+    const { eventing, children } = this.props;
+
+    if (typeof children === 'function') {
+      return children({ alertAll: eventing.alertAll, watchFor: eventing.watchFor }) || null;
+    }
+
+    return children || null;
+  }
+
+  static propTypes = {
+    watching: PropTypes.array.isRequired,
+    eventing: PropTypes.object,
   };
 
 }

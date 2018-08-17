@@ -1,4 +1,7 @@
 src/
+coverage/
+.gitattributes
+.travis.yml
 .babelrc
 .eslintrc
 webpack.config.js

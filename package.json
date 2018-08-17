@@ -1,6 +1,6 @@
 {
   "name": "react-event-pump",
-  "version": "0.0.3",
+  "version": "0.0.8",
   "description": "Very lightweight event pump for react apps using context api and timeouts.",
   "author": "Kirk Bulis <kirk.d.bulis@gmail.com> (https://github.com/kbulis)",
   "repository": {
